@@ -61,6 +61,10 @@ func TestResolveChain(t *testing.T) {
 	ctx, cf := context.WithCancel(ctx)
 	defer cf()
 	eg := errgroup.Group{}
+	t.Cleanup(func() {
+		cf()
+		require.NoError(t, eg.Wait())
+	})
 	eg.Go(func() error {
 		return Serve(ctx, snodes[0], func(res *Response, req *Request) bool {
 			if HasPrefix(req.Query.Path, Path{"a"}) {
@@ -107,8 +111,6 @@ func TestResolveChain(t *testing.T) {
 	t.Log(ents)
 	require.Len(t, ents, 1)
 	require.Equal(t, "hello world", must(ents[0].AsString()))
-	cf()
-	require.NoError(t, eg.Wait())
 }
 
 func newPair(t testing.TB) (n1, n2 inet256.Node) {
