@@ -60,9 +60,11 @@ type Request struct {
 }
 
 type Query struct {
-	Path Path     `json:"path"`
-	Keys []string `json:"keys"`
+	Path   Path   `json:"path"`
+	Filter Filter `json:"filter"`
 }
+
+type Filter map[string]string
 
 type Response struct {
 	// RequestID is the ID of the corresponding Request
@@ -75,15 +77,15 @@ type Response struct {
 }
 
 type Redirect struct {
-	Addrs []inet256.Addr `json:"addrs"`
-	Path  Path           `json:"path"`
+	Addrs  []inet256.Addr `json:"addrs"`
+	Prefix Path           `json:"prefix"`
 	// TTL is the time to live in seconds
 	TTL uint32 `json:"ttl"`
 }
 
 type Entry struct {
-	Key   string          `json:"k"`
-	Value json.RawMessage `json:"v"`
+	Labels map[string]string `json:"l"`
+	Value  json.RawMessage   `json:"v"`
 	// TTL is the time to live in seconds
 	TTL uint32 `json:"ttl"`
 }

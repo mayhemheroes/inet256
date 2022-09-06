@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
+	"sync"
 
 	"github.com/inet256/inet256/pkg/inet256"
 	"golang.org/x/crypto/sha3"
@@ -19,16 +20,22 @@ type Handler func(res *Response, req *Request) bool
 // Such an error could come from the Node, or the Context.
 // Serve returns nil, only if node returns context.Cancelled.
 func Serve(ctx context.Context, node inet256.Node, h Handler) error {
+	wg := sync.WaitGroup{}
+	defer wg.Wait()
 	for {
 		if err := node.Receive(ctx, func(msg inet256.Message) {
 			var req Request
 			if err := json.Unmarshal(msg.Payload, &req); err != nil {
+				log.Println("error parsing json", err)
 				return
 			}
 			var reqID RequestID
 			sha3.ShakeSum256(reqID[:], msg.Payload)
 			replyTo := msg.Src
+
+			wg.Add(1)
 			go func() {
+				defer wg.Done()
 				var res Response
 				if h(&res, &req) {
 					res.RequestID = reqID
