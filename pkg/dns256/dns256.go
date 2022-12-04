@@ -84,24 +84,23 @@ type Redirect struct {
 }
 
 type Entry struct {
-	Labels map[string]string `json:"l"`
-	Value  json.RawMessage   `json:"v"`
+	Data map[string]json.RawMessage `json:"data"`
 	// TTL is the time to live in seconds
 	TTL uint32 `json:"ttl"`
 }
 
-func (e Entry) AsUint64() (ret uint64, err error) {
-	err = json.Unmarshal(e.Value, &ret)
+func (e Entry) AsUint64(key string) (ret uint64, err error) {
+	err = json.Unmarshal(e.Data[key], &ret)
 	return ret, err
 }
 
-func (e Entry) AsString() (ret string, err error) {
-	err = json.Unmarshal(e.Value, &ret)
+func (e Entry) AsString(key string) (ret string, err error) {
+	err = json.Unmarshal(e.Data[key], &ret)
 	return ret, err
 }
 
-func (e Entry) AsINET256() (ret inet256.Addr, err error) {
-	err = json.Unmarshal(e.Value, &ret)
+func (e Entry) AsINET256(key string) (ret inet256.Addr, err error) {
+	err = json.Unmarshal(e.Data[key], &ret)
 	return ret, err
 }
 

@@ -12,19 +12,16 @@ import (
 type Resolver struct {
 	client Client
 	roots  []inet256.Addr
-
-	cache *Cache
 }
 
 func NewResolver(node inet256.Node, roots []inet256.Addr, opts ...ResolverOpt) *Resolver {
 	return &Resolver{
 		client: *NewClient(node),
 		roots:  roots,
-		cache:  NewCache(),
 	}
 }
 
-func (r *Resolver) Resolve(ctx context.Context, x Path, opts ...ResolveOpt) ([]Entry, error) {
+func (r *Resolver) Resolve(ctx context.Context, q Query, opts ...ResolveOpt) ([]Entry, error) {
 	config := resolveConfig{
 		maxHops: 32,
 	}
