@@ -6,6 +6,8 @@ import (
 
     "github.com/inet256/inet256/client/go_client/inet256client"
     "github.com/inet256/inet256/pkg/bitstr"
+    "github.com/inet256/inet256/pkg/inet256"
+    
 )
 
 func mayhemit(bytes []byte) int {
@@ -18,21 +20,62 @@ func mayhemit(bytes []byte) int {
         switch num {
 
         case 0:
-            fuzzConsumer := fuzz.NewConsumer(bytes)
             var testStruct bitstr.BytesLSB
-            var testInt int
 
             testStruct.Bytes = bytes
             testStruct.Begin = 0
             testStruct.End = len(bytes)
 
-            err := fuzzConsumer.CreateSlice(&testInt)
+            testStruct.Len()
+
+            return 0
+
+        case 1:
+            fuzzConsumer := fuzz.NewConsumer(bytes)
+            var testAddr []byte
+            err := fuzzConsumer.CreateSlice(&testAddr)
             if err != nil {
                 return 0
             }
 
-            testStruct.Len()
+            inet256.AddrFromBytes(testAddr)
 
+            return 0
+
+        case 2:
+            fuzzConsumer := fuzz.NewConsumer(bytes)
+            var fuzzBytes []byte
+            err := fuzzConsumer.CreateSlice(&fuzzBytes)
+            if err != nil {
+                return 0
+            }
+
+            inet256.ParseAddrBase64(fuzzBytes)
+
+            return 0
+
+        case 3:
+            fuzzConsumer := fuzz.NewConsumer(bytes)
+            var x []byte
+            var prefix []byte
+            var nbits int
+
+            err := fuzzConsumer.CreateSlice(&x)
+            if err != nil {
+                return 0
+            }
+
+            err = fuzzConsumer.CreateSlice(&prefix)
+            if err != nil {
+                return 0
+            }
+
+            err = fuzzConsumer.CreateSlice(&nbits)
+            if err != nil {
+                return 0
+            }
+
+            inet256.HasPrefix(x, prefix, nbits)
             return 0
     
         default:
