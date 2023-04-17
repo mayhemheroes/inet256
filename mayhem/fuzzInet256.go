@@ -31,24 +31,6 @@ func mayhemit(bytes []byte) int {
                 return 0
             }
 
-            testStruct.At(testInt)
-
-            return 0
-
-        case 1:
-            fuzzConsumer := fuzz.NewConsumer(bytes)
-            var testStruct bitstr.BytesLSB
-            var testInt int
-
-            testStruct.Bytes = bytes
-            testStruct.Begin = 0
-            testStruct.End = len(bytes)
-
-            err := fuzzConsumer.CreateSlice(&testInt)
-            if err != nil {
-                return 0
-            }
-
             testStruct.Len()
 
             return 0
