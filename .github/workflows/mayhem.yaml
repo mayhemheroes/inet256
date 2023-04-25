@@ -48,7 +48,8 @@ jobs:
       fail-fast: false
       matrix:
         mayhemfile:
-          - mayhem/Mayhemfile
+          - mayhem/fuzzInet256_client.mayhemfile
+          - mayhem/fuzzInet256_inet256.mayhemfile
 
     steps:
       - uses: actions/checkout@v2
